@@ -149,7 +149,7 @@ df.groupby('product_name').apply(
 
 **Taif S. Alanazi**  
 Data Analyst · Python · Power BI · SQL  
-[LinkedIn]((https://www.linkedin.com/in/taifsamran/)) · [GitHub](https://github.com/TaifAlanazi))
+[LinkedIn](https://www.linkedin.com/in/taifsamran/) · [GitHub](https://github.com/TaifAlanazi))
 
 ---
 
