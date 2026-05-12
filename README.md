@@ -50,7 +50,7 @@ retail-sales-inventory-analytics/
 | Source | Superstore Sales Dataset (public domain) |
 | Period | 2011–2014 |
 | Categories | Technology · Furniture · Office Supplies |
-| Records | ~10,000 orders |
+| Records | 51290 orders |
 | Key fields | order_date · product_name · category · sub_category · sales · profit · discount · quantity |
 
 ---
@@ -89,77 +89,6 @@ retail-sales-inventory-analytics/
 | 🟡 Medium | Prioritise Technology in inventory and marketing | $18.87/unit vs $4.79/unit for Office Supplies |
 | 🟡 Medium | Align inventory decisions with profit per unit | 41% of orders at Reorder threshold — not all profitable |
 | ⚫ Ongoing | Review and discontinue structural loss-makers | Losses grew from −$42K to −$81K over 4 years |
-
----
-
-## DAX Measures Built
-
-```dax
--- Profit Margin %
-Profit Margin % = DIVIDE(SUM(profit), SUM(sales), 0)
-
--- Profit Per Unit
-Profit Per Unit = DIVIDE(SUM(profit), SUM(quantity), 0)
-
--- % Unprofitable Orders
-% Unprofitable Orders =
-DIVIDE(
-    COUNTROWS(FILTER(SuperStoreOrders_afterEDA, profit < 0)),
-    COUNTROWS(SuperStoreOrders_afterEDA),
-    0
-)
-
--- Discount-Profit Correlation
-Discount_Profit_Correlation =
-VAR MeanDiscount = AVERAGEX(SuperStoreOrders_afterEDA, SuperStoreOrders_afterEDA[discount])
-VAR MeanProfit   = AVERAGEX(SuperStoreOrders_afterEDA, SuperStoreOrders_afterEDA[profit])
-VAR Numerator    = SUMX(SuperStoreOrders_afterEDA,
-    (SuperStoreOrders_afterEDA[discount] - MeanDiscount) *
-    (SuperStoreOrders_afterEDA[profit]   - MeanProfit))
-VAR DenomA = SQRT(SUMX(SuperStoreOrders_afterEDA,
-    (SuperStoreOrders_afterEDA[discount] - MeanDiscount) ^ 2))
-VAR DenomB = SQRT(SUMX(SuperStoreOrders_afterEDA,
-    (SuperStoreOrders_afterEDA[profit]   - MeanProfit) ^ 2))
-RETURN DIVIDE(Numerator, DenomA * DenomB, 0)
-
--- Stocking Action (Measure)
-Stocking Action =
-VAR CurrentAvgProfit = [Avg Profit]
-VAR CurrentStatus    = MAX(SuperStoreOrders_afterEDA[Stock Status])
-RETURN
-SWITCH(TRUE(),
-    CurrentStatus = "Reorder"   && CurrentAvgProfit >= 0, "✓ Restock",
-    CurrentStatus = "Reorder"   && CurrentAvgProfit <  0, "⚠ Review first",
-    CurrentStatus = "In stock"  && CurrentAvgProfit >= 0, "● Monitor",
-    CurrentStatus = "In stock"  && CurrentAvgProfit <  0, "⚠ Check discounts",
-    CurrentStatus = "Overstock" && CurrentAvgProfit >= 0, "↓ Reduce stock",
-    CurrentStatus = "Overstock" && CurrentAvgProfit <  0, "⚠ Urgent",
-    "—"
-)
-```
-
----
-
-## Python EDA Highlights
-
-```python
-# Average profit by discount band
-df.groupby('discount_band')['profit'].mean()
-
-# Discount–profit correlation
-df[['discount', 'profit']].corr()
-
-# Top products by profit per unit
-df.groupby('product_name').apply(
-    lambda x: x['profit'].sum() / x['quantity'].sum()
-).sort_values(ascending=False).head(10)
-
-# % unprofitable orders
-unprofitable = (df['profit'] < 0).sum() / len(df) * 100
-
-# Average profit by stock status
-df.groupby('Stock Status')['profit'].mean()
-```
 
 
 ---
