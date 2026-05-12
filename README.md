@@ -145,33 +145,11 @@ df.groupby('product_name').apply(
 
 ---
 
-## How to Run
-
-1. Clone the repository
-```bash
-git clone https://github.com/yourusername/retail-sales-inventory-analytics.git
-```
-
-2. Install Python dependencies
-```bash
-pip install pandas matplotlib seaborn jupyter
-```
-
-3. Open the EDA notebook
-```bash
-jupyter notebook notebooks/retail_eda.ipynb
-```
-
-4. Open the Power BI dashboard
-Open `dashboard/retail_dashboard.pbix` in Power BI Desktop (free download from Microsoft)
-
----
-
 ## Author
 
 **Taif S. Alanazi**  
 Data Analyst · Python · Power BI · SQL  
-[LinkedIn](https://linkedin.com/in/yourprofile) · [GitHub](https://github.com/yourusername)
+[LinkedIn]((https://www.linkedin.com/in/taifsamran/)) · [GitHub](https://github.com/TaifAlanazi))
 
 ---
 
